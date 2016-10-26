@@ -22,6 +22,10 @@ or concerns with licensing, please contact techsupport@sparkfun.com.
 Distributed as-is; no warranty is given.
 ******************************************************************************/
 //Define USE_ALT_I2C to use the teesny 3 i2c_t3.h library, which allows I2C bus hang resolution
+// THIS MUST BE DONE WITHIN THIS FILE.  Users wishing to do this will probably find themselves
+// copying SCMD.cpp, SCMD.h, and SCMD_config.h to their project folder and excluding the arduino
+// library form the IDE entirely.
+
 //#define USE_ALT_I2C
 
 //See _____ for additional topology notes.
