@@ -77,7 +77,7 @@ SCMD::SCMD( void )
 //  mySensor.begin();
 //
 //****************************************************************************//
-uint8_t SCMD::begin()
+uint8_t SCMD::begin( void )
 {
 	//Check the settings structure values to determine how to setup the device
 	uint8_t dataToWrite = 0;  //Temporary variable
@@ -112,9 +112,19 @@ uint8_t SCMD::begin()
 	
 	//dummy read
 	readRegister(SCMD_ID);
-
-	writeRegister(SCMD_DRIVER_ENABLE, 0x01);
+	
 	return readRegister(SCMD_ID);
+}
+
+//Enable and disable functions.  Call after begin to enable the h-bridges
+void SCMD::enable( void )
+{
+	writeRegister(SCMD_DRIVER_ENABLE, 0x01);
+}
+
+void SCMD::disable( void )
+{
+	writeRegister(SCMD_DRIVER_ENABLE, 0x00);
 }
 
 //Reset function

@@ -84,7 +84,9 @@ class SCMD
     SCMD( void );
 	
 	
-    uint8_t begin( void );  //Call to apply SCMDSettings and enable drivers.
+    uint8_t begin( void );  //Call to apply SCMDSettings and returns ID word
+	void enable( void );
+	void disable( void );
 	void reset( void );  //Software reset routine
     void setDrive( uint8_t motorNum, uint8_t direction, uint8_t level );//apply drive levels to motors
 	void inversionMode( uint8_t motorNum, uint8_t polarity );//Set inversion states for motors

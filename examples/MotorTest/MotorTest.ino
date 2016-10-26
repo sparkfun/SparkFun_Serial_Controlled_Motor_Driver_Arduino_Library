@@ -61,6 +61,8 @@ void setup()
 	Serial.println(myMotorDriver.begin(), HEX);
 	Serial.println();
 	
+	myMotorDriver.enable();
+	
 }
 
 void loop()

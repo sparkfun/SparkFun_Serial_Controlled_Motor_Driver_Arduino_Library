@@ -51,18 +51,40 @@ void setup()
 	//  set chip select if SPI selected with the config jumpers
 	myMotorDriver.settings.chipSelectPin = 10;
 	
-	delay(2500); //Give the serial driver time to get happy
+	delay(2500); //Give the serial driver time to check for slaves
 	
 	//  initialize the driver and enable the motor outputs
 	Serial.print("Starting driver... ID = 0x");
 	Serial.println(myMotorDriver.begin(), HEX);
-	Serial.println();
 	
-	//myMotorDriver.inversionMode(0, 1); //invert channel A
-	myMotorDriver.inversionMode(1, 1); //invert channel B
+	//  Report number of slaves found
+	uint8_t tempAddr = myMotorDriver.readRegister(SCMD_SLV_TOP_ADDR);
+	if( tempAddr >= START_SLAVE_ADDR )
+	{
+		Serial.print("Detected ");
+		Serial.print(tempAddr - START_SLAVE_ADDR + 1); //Top address minus bottom address + 1 = number of slaves
+		Serial.println(" slaves.");
+	}
+	else
+	{
+		Serial.println("No slaves detected");
+	}
+	
+	//Configure bridging modes
+	myMotorDriver.bridgingMode( 1, 1 ); //( DriverNum 1, bridged state = 1 )  This will bridge the first slave
 
+	//uncomment to set inversion
+	
+	//myMotorDriver.inversionMode(0, 1); //invert master, channel A
+	//myMotorDriver.inversionMode(1, 1); //invert master, channel B
+	//myMotorDriver.inversionMode(2, 1); //invert slave 1, channel A
+	//    no need to configure motor 3, this position does nothing because the slave is bridged.
+	//myMotorDriver.inversionMode(4, 1); //invert slave 2, channel A
+	//myMotorDriver.inversionMode(5, 1); //invert slave 2, channel B
+
+	//Enable the motors.
 	myMotorDriver.enable();
-
+	
 	pinMode(8, INPUT_PULLUP);
 	
 }
@@ -71,38 +93,21 @@ void setup()
 #define RIGHT_MOTOR 1
 void loop()
 {
-	myMotorDriver.setDrive( 0, 0, 0); //Stop motor
-	myMotorDriver.setDrive( 1, 0, 0); //Stop motor
-	while(digitalRead(8) == 0); //Hold if jumper is placed between pin 8 and ground
-	
 	//***** Operate the Motor Driver *****//
 	//  This walks through all 34 motor positions driving them forward and back.
 	//  It uses .setDrive( motorNum, direction, level ) to drive the motors.
-	
-	//Smoothly move one motor up to speed and back
-	for(int i = 0; i < 256; i++)
+	//
+	//  Notice that when i == 3, no motor spins.  This position is made inactive by bridging the first slave.
+	Serial.println("Now stepping through the motors.");
+	for(int i = 0; i < 6; i++)
 	{
-		myMotorDriver.setDrive( LEFT_MOTOR, 0, i);
-		myMotorDriver.setDrive( RIGHT_MOTOR, 0, 20 + (i / 2));
-		delay(5);
-	}
-	for(int i = 255; i >= 0; i--)
-	{
-		myMotorDriver.setDrive( LEFT_MOTOR, 0, i);
-		myMotorDriver.setDrive( RIGHT_MOTOR, 0, 20 + (i / 2));
-		delay(5);
-	}
-	//Smoothly move the other motor up to speed and back
-	for(int i = 0; i < 256; i++)
-	{
-		myMotorDriver.setDrive( LEFT_MOTOR, 0, 20 + (i / 2));
-		myMotorDriver.setDrive( RIGHT_MOTOR, 0, i);
-		delay(5);
-	}
-	for(int i = 255; i >= 0; i--)
-	{
-		myMotorDriver.setDrive( LEFT_MOTOR, 0, 20 + (i / 2));
-		myMotorDriver.setDrive( RIGHT_MOTOR, 0, i);
-		delay(5);
+		Serial.print("Driving motor ");
+		Serial.println(i);
+		
+		myMotorDriver.setDrive( i, 1, 255); //Drive motor i forward at full speed
+		delay(1000);
+		myMotorDriver.setDrive( i, 0, 255); //Drive motor i backward at full speed
+		delay(1000);
+		myMotorDriver.setDrive( i, 1, 0);
 	}
 }
