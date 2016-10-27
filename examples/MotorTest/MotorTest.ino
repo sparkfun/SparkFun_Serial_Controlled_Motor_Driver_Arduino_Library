@@ -38,7 +38,7 @@ SCMD myMotorDriver;
 
 void setup()
 {
-	Serial.begin(115200);
+	Serial.begin(9600);
 	pinMode(LEDPIN, OUTPUT);
 
 	Serial.println("Starting sketch.");
@@ -59,9 +59,14 @@ void setup()
 	//  initialize the driver and enable the motor outputs
 	Serial.print("Starting driver... ID = 0x");
 	Serial.println(myMotorDriver.begin(), HEX);
-	Serial.println();
+
+	Serial.print("Waiting for enumeration...");
+	while( myMotorDriver.isReady() == false );
+	Serial.println("Done.");
 	
 	myMotorDriver.enable();
+
+	Serial.println();
 	
 }
 

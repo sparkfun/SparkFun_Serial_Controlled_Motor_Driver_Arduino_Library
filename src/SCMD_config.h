@@ -30,8 +30,11 @@ Distributed as-is; no warranty is given.
 #define MAX_SLAVE_ADDR     0x5F//Max address of slaves
 #define MASTER_LOCK_KEY    0x9B
 #define USER_LOCK_KEY      0x5C
-#define FIRMWARE_VERSION   0x03
-    
+#define FIRMWARE_VERSION   0x04
+
+//SCMD_STATUS_1 masks
+#define SCMD_ENUMERATION_B0 0x01
+
 //Address map
 #define SCMD_FID                   0x00
 #define SCMD_ID                    0x01
@@ -114,6 +117,8 @@ Distributed as-is; no warranty is given.
 #define SCMD_MASTER_LOCK           0x74
 #define SCMD_USER_LOCK             0x75
 #define SCMD_FSAFE_TIME            0x76
+#define SCMD_STATUS_1              0x77
+#define SCMD_CONTROL_1             0x78
 
 #define SCMD_REM_ADDR              0x79
 #define SCMD_REM_OFFSET            0x7A

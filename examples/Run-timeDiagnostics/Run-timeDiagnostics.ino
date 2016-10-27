@@ -60,8 +60,8 @@ void setup()
 	//***** Configure the Motor Driver's Settings *****//
 
 	//  .commInter face can be I2C_MODE or SPI_MODE
-	//myMotorDriver.settings.commInterface = I2C_MODE;
-	myMotorDriver.settings.commInterface = SPI_MODE;
+	myMotorDriver.settings.commInterface = I2C_MODE;
+	//myMotorDriver.settings.commInterface = SPI_MODE;
 	
 	//  set address if I2C configuration selected with the config jumpers
 	myMotorDriver.settings.I2CAddress = 0x5A;
@@ -72,6 +72,9 @@ void setup()
 	//  initialize the driver and enable the motor outputs
 	Serial.print("Starting driver... ID = 0x");
 	Serial.println(myMotorDriver.begin(), HEX);
+	Serial.print("Waiting for enumeration...");
+	while( myMotorDriver.isReady() == false );
+	Serial.println("Done.");
 	Serial.println();
 	
 	//  Configure the failsafe time and display

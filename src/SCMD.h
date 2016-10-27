@@ -85,6 +85,7 @@ class SCMD
 	
 	
     uint8_t begin( void );  //Call to apply SCMDSettings and returns ID word
+	bool isReady( void );
 	void enable( void );
 	void disable( void );
 	void reset( void );  //Software reset routine

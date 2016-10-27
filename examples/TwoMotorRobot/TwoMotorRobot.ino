@@ -21,6 +21,8 @@ Distributed as-is; no warranty is given.
 //This example drives a robot in left and right arcs, driving in an overall wiggly course.
 //  It demonstrates the variable control abilities. When used with a RedBot chassis,
 //  each turn is about 90 degrees per drive.
+//
+//  Place a wire between pin 8 and ground to prevent motor drive.
 
 #include <Arduino.h>
 #include <stdint.h>
@@ -51,12 +53,13 @@ void setup()
 	//  set chip select if SPI selected with the config jumpers
 	myMotorDriver.settings.chipSelectPin = 10;
 	
-	delay(2500); //Give the serial driver time to get happy
-	
 	//  initialize the driver and enable the motor outputs
 	Serial.print("Starting driver... ID = 0x");
 	Serial.println(myMotorDriver.begin(), HEX);
-	Serial.println();
+
+	Serial.print("Waiting for enumeration...");
+	while( myMotorDriver.isReady() == false );
+	Serial.println("Done.");
 	
 	//myMotorDriver.inversionMode(0, 1); //invert channel A
 	myMotorDriver.inversionMode(1, 1); //invert channel B
@@ -64,6 +67,8 @@ void setup()
 	myMotorDriver.enable();
 
 	pinMode(8, INPUT_PULLUP);
+
+	Serial.println();
 	
 }
 

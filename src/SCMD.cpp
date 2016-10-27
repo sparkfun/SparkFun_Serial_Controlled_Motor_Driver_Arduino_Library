@@ -116,6 +116,21 @@ uint8_t SCMD::begin( void )
 	return readRegister(SCMD_ID);
 }
 
+//check if enumeration is complete
+bool SCMD::isReady( void )
+{
+	//Wait 5ms to prevent spam.
+	delay(5);
+	if( readRegister(SCMD_STATUS_1) & SCMD_ENUMERATION_B0 )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
 //Enable and disable functions.  Call after begin to enable the h-bridges
 void SCMD::enable( void )
 {
