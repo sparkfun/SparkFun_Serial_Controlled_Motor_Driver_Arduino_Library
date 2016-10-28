@@ -18,9 +18,13 @@ Please review the LICENSE.md file included with this example. If you have any qu
 or concerns with licensing, please contact techsupport@sparkfun.com.
 Distributed as-is; no warranty is given.
 ******************************************************************************/
-//This example drives a robot in left and right arcs, driving in an overall wiggly course.
-//  It demonstrates the variable control abilities. When used with a RedBot chassis,
-//  each turn is about 90 degrees per drive.
+//This example demonstrates some of the more advanced usage of the motor driver.
+//It uses 3 motor drivers, with the master attached as SPI.  One slave is bridged,
+//and the sketch test drives each motor. (There will be a break when the overtaken motor
+//channel is activated.)
+//
+//This also shows how to count the number of connected slaves and report, as well as
+//arbitrary register operation.
 
 #include <Arduino.h>
 #include <stdint.h>
@@ -36,15 +40,15 @@ SCMD myMotorDriver;
 
 void setup()
 {
-	Serial.begin(115200);
+	Serial.begin(9600);
 
 	Serial.println("Starting sketch.");
 
 	//***** Configure the Motor Driver's Settings *****//
 
 	//  .commInter face can be I2C_MODE or SPI_MODE
-	myMotorDriver.settings.commInterface = I2C_MODE;
-	//myMotorDriver.settings.commInterface = SPI_MODE;
+	//myMotorDriver.settings.commInterface = I2C_MODE;
+	myMotorDriver.settings.commInterface = SPI_MODE;
 
 	//  set address if I2C configuration selected with the config jumpers
 	myMotorDriver.settings.I2CAddress = 0x5A; //config pattern "0101" on board for address 0x5A
@@ -54,8 +58,19 @@ void setup()
 	delay(2500); //Give the serial driver time to check for slaves
 	
 	//  initialize the driver and enable the motor outputs
-	Serial.print("Starting driver... ID = 0x");
-	Serial.println(myMotorDriver.begin(), HEX);
+	uint8_t tempReturnValue = myMotorDriver.begin();
+	while ( tempReturnValue != 0xA9 )
+	{
+		Serial.print( "ID mismatch, read as 0x" );
+		Serial.println( tempReturnValue, HEX );
+		delay(500);
+		tempReturnValue = myMotorDriver.begin();
+	}
+	Serial.println( "ID matches 0xA9" );
+	
+	Serial.print("Waiting for enumeration...");
+	while ( myMotorDriver.isReady() == false );
+	Serial.println("Done.");
 	
 	//  Report number of slaves found
 	uint8_t tempAddr = myMotorDriver.readRegister(SCMD_SLV_TOP_ADDR);
@@ -73,7 +88,7 @@ void setup()
 	//Configure bridging modes
 	myMotorDriver.bridgingMode( 1, 1 ); //( DriverNum 1, bridged state = 1 )  This will bridge the first slave
 
-	//uncomment to set inversion
+	//Uncomment to set inversion
 	
 	//myMotorDriver.inversionMode(0, 1); //invert master, channel A
 	//myMotorDriver.inversionMode(1, 1); //invert master, channel B
@@ -89,8 +104,6 @@ void setup()
 	
 }
 
-#define LEFT_MOTOR 0
-#define RIGHT_MOTOR 1
 void loop()
 {
 	//***** Operate the Motor Driver *****//
