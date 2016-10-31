@@ -84,8 +84,7 @@ void setup()
 	
 	//Splash help
 	Serial.println();
-	Serial.println("Use capital letters for 'R' and 'W'");
-	Serial.println("Address and data must be upper case hex");
+	Serial.println("Address and data must be hex");
 	Serial.println("'Wnnhh'  Write hh to nn (ex: W20F0 for drive, M0)");
 	Serial.println("'Rnn'  Read register nn (ex: R01 to get ID)");
 }

@@ -92,14 +92,12 @@ uint8_t SCMD::begin( void )
 	case SPI_MODE:
 		// start the SPI library:
 		SPI.begin();
-		// Maximum SPI frequency is 10MHz, could divide by 2 here:
+		// Maximum SPI frequency is 1MHz use SPI_CLK_DIV16
 		SPI.setClockDivider(SPI_CLOCK_DIV32);
 		// Data is read and written MSb first.
 		SPI.setBitOrder(MSBFIRST);
 		// Data is captured on rising edge of clock (CPHA = 0)
-		// Base value of the clock is HIGH (CPOL = 1)
-		// This was SPI_MODE3 for RedBoard, but I had to change to
-		// MODE0 for Teensy 3.1 operation
+		// Base value of the clock is LOW (CPOL = 0)
 		SPI.setDataMode(SPI_MODE0);
 		// initalize the  data ready and chip select pins:
 		pinMode(settings.chipSelectPin, OUTPUT);
