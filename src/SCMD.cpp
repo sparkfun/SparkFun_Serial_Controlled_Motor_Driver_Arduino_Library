@@ -90,6 +90,9 @@ uint8_t SCMD::begin( void )
 		break;
 
 	case SPI_MODE:
+		// initalize the  data ready and chip select pins:
+		pinMode(settings.chipSelectPin, OUTPUT);
+		digitalWrite(settings.chipSelectPin, HIGH);
 		// start the SPI library:
 		SPI.begin();
 		// Maximum SPI frequency is 1MHz use SPI_CLK_DIV16
@@ -99,9 +102,6 @@ uint8_t SCMD::begin( void )
 		// Data is captured on rising edge of clock (CPHA = 0)
 		// Base value of the clock is LOW (CPOL = 0)
 		SPI.setDataMode(SPI_MODE0);
-		// initalize the  data ready and chip select pins:
-		pinMode(settings.chipSelectPin, OUTPUT);
-		digitalWrite(settings.chipSelectPin, HIGH);
 		break;
 
 	default:
