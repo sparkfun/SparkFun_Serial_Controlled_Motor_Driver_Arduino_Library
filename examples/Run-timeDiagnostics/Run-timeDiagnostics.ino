@@ -60,8 +60,8 @@ void setup()
 	//***** Configure the Motor Driver's Settings *****//
 
 	//  .commInter face can be I2C_MODE or SPI_MODE
-	//myMotorDriver.settings.commInterface = I2C_MODE;
-	myMotorDriver.settings.commInterface = SPI_MODE;
+	myMotorDriver.settings.commInterface = I2C_MODE;
+//	myMotorDriver.settings.commInterface = SPI_MODE;
 	
 	//  set address if I2C configuration selected with the config jumpers
 	myMotorDriver.settings.I2CAddress = 0x5A;
@@ -70,16 +70,30 @@ void setup()
 	delay(500);
 	
 	//  initialize the driver and enable the motor outputs
-	Serial.print("Starting driver... ID = 0x");
+	Serial.print("Read ID = 0x");
 	Serial.println(myMotorDriver.begin(), HEX);
-	Serial.print("Waiting for enumeration...");
-	while( myMotorDriver.isReady() == false );
-	Serial.println("Done.");
+	
+	//  initialize the driver and enable the motor outputs
+	while ( myMotorDriver.begin() != 0xA9 )
+	{
+		Serial.println( "ID mismatch, trying again" );
+		delay(50);
+	}
+	Serial.println( "ID matches 0xA9" );
+	Serial.println( "Re-enumerating slaves");
+	myMotorDriver.writeRegister( SCMD_CONTROL_1, SCMD_RE_ENUMERATE_BIT );
+	delay(100); //Give it time to take
+	Serial.print("Waiting for ready");
+	while( myMotorDriver.ready() == false );
+	Serial.println(" Done.");
+
 	Serial.println();
 	
 	//  Configure the failsafe time and display
 	myMotorDriver.writeRegister(SCMD_USER_LOCK, USER_LOCK_KEY);
+	while( myMotorDriver.busy() );
 	myMotorDriver.writeRegister(SCMD_MASTER_LOCK, MASTER_LOCK_KEY);
+	while( myMotorDriver.busy() );
 	myMotorDriver.writeRegister(SCMD_FSAFE_TIME, FAILSAFE_TIMEOUT_10MS_LSB);
 	Serial.print("Failsafe time set to ");
 	Serial.print(FAILSAFE_TIMEOUT_10MS_LSB * 10);

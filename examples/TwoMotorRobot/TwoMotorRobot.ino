@@ -63,7 +63,7 @@ void setup()
 
 
   Serial.print("Waiting for enumeration...");
-  while ( myMotorDriver.isReady() == false );
+  while ( myMotorDriver.ready() == false );
   Serial.println("Done.");
 
   //myMotorDriver.inversionMode(0, 1); //invert channel A

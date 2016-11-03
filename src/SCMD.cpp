@@ -28,6 +28,9 @@ Distributed as-is; no warranty is given.
 
 //#define USE_ALT_I2C
 
+//Use VERBOSE_SERIAL to add debug serial to an existing Serial object.
+//#define VERBOSE_SERIAL
+
 //See _____ for additional topology notes.
 
 #include <stdint.h>
@@ -115,12 +118,30 @@ uint8_t SCMD::begin( void )
 }
 
 //check if enumeration is complete
-bool SCMD::isReady( void )
+bool SCMD::ready( void )
 {
-	//Wait 5ms to prevent spam.
-	delay(5);
-	if( readRegister(SCMD_STATUS_1) & SCMD_ENUMERATION_B0 )
+	if( readRegister(SCMD_STATUS_1) & SCMD_ENUMERATION_BIT )
 	{
+		return true;
+	}
+	else
+	{
+#ifdef VERBOSE_SERIAL		
+		Serial.print("-");
+#endif
+		return false;
+	}
+
+}
+
+//check if enumeration is complete
+bool SCMD::busy( void )
+{
+	if( readRegister(SCMD_STATUS_1) & SCMD_BUSY_BIT )
+	{
+#ifdef VERBOSE_SERIAL		
+		Serial.print(".");
+#endif
 		return true;
 	}
 	else
@@ -501,10 +522,11 @@ void SCMD::writeRegister(uint8_t offset, uint8_t dataToWrite)
 //  uint8_t offset -- Address of data to read.  Can be 0x00 to 0x7F
 uint8_t SCMD::readRemoteRegister(uint8_t address, uint8_t offset)
 {
+	while(busy());
 	writeRegister(SCMD_REM_ADDR, address);
 	writeRegister(SCMD_REM_OFFSET, offset);
 	writeRegister(SCMD_REM_READ, 1);
-	delay(5);
+	while(busy());
 	return readRegister(SCMD_REM_DATA_RD);
 	
 }
@@ -518,6 +540,7 @@ uint8_t SCMD::readRemoteRegister(uint8_t address, uint8_t offset)
 //  uint8_t dataToWrite -- Data to write.
 void SCMD::writeRemoteRegister(uint8_t address, uint8_t offset, uint8_t dataToWrite)
 {
+	while(busy());
 	writeRegister(SCMD_REM_ADDR, address);
 	writeRegister(SCMD_REM_OFFSET, offset);
 	writeRegister(SCMD_REM_DATA_WR, dataToWrite);

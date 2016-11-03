@@ -70,7 +70,7 @@ void setup()
 	Serial.println(myMotorDriver.begin(), HEX);
 	
 	Serial.print("Waiting for enumeration...");
-	while( myMotorDriver.isReady() == false );
+	while( myMotorDriver.ready() == false );
 	Serial.println("Done.");
 	
 	//Prepare the input buffer --

@@ -69,7 +69,7 @@ void setup()
 	Serial.println( "ID matches 0xA9" );
 	
 	Serial.print("Waiting for enumeration...");
-	while ( myMotorDriver.isReady() == false );
+	while ( myMotorDriver.ready() == false );
 	Serial.println("Done.");
 	
 	//  Report number of slaves found
