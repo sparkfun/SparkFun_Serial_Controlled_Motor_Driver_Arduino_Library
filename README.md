@@ -1,11 +1,9 @@
 SparkFun <PRODUCT NAME> Arduino Library
 ========================================
 
-![SparkFun Part Name](URL for picture of part)
+![Serial Controlled Motor Driver](https://cdn.sparkfun.com/assets/learn_tutorials/5/7/4/SCMD_Main_Photo.jpg)
 
-[*SparkFun Part Name (SKU)*](URL for product on Sparkfun.com)
-
-<Basic description of the library.>
+[*Serial Controlled Motor Driver (SCMD) (ROB-13911)*](https://www.sparkfun.com/products/13911)
 
 Repository Contents
 -------------------
@@ -20,18 +18,54 @@ Documentation
 --------------
 
 * **[Installing an Arduino Library Guide](https://learn.sparkfun.com/tutorials/installing-an-arduino-library)** - Basic information on how to install an Arduino library.
-* **[Product Repository](GitHub Product URL)** - Main repository (including hardware files) for the <PRODUCT NAME>.
-* **[Hookup Guide](Learn.SparkFun URL)** - Basic hookup guide for the <PRODUCT NAME>.
+* **[Product Repository](https://github.com/sparkfun/Serial_Controlled_Motor_Driver)** - Main repository (including hardware files) for the SCMD.
+* **[Hookup Guide](https://learn.sparkfun.com/tutorials/serial-controlled-motor-driver-hookup-guide)** - Basic hookup guide for the SCMD.
 
-### Functions
+#### General Operation
+
+There are a few classes used in the library.  The main class is called `SCMD`, which is the object that talks to the motor drivers.  There are also a couple structs in use -- `SCMDSettings` and `SCMDDiagnostics`.  A `SCMDSettings` object named settings is present within the SCMD class for configuration.
+
+#### Construction
+The library is made such that new motor driver objects are constructed without parameters, and are configured later before calling `.begin()`.
+
+Example:
+
+    SCMD myMotorDriver; //This creates an instance of SCMD which will be bound to a single master.
+
+#### Settings
+The main SCMD class has a public member which is named settings.  To configure settings, use the format `myMotorDriver.settings.I2CAddress = (...);` then call .begin() to apply.
+
+settings contains the following members:
+
+* uint8_t commInterface -- Set equal to I2C_MODE or SPI_MODE
+* uint8_t I2CAddress -- Set to address that master is configured to in case of I2C usage
+* uint8_t chipSelectPin -- Set to chip select pin used on Arduino in case of SPI
+
+#### Functions
 
 #### uint8_t begin( void );
 
-Call after providing settings to start the wire library, apply the settings, get the ID word (returned, should be 0xA9), and enable the drivers.
+Call after providing settings to start the wire library, apply the settings, and get the ID word (return value should be 0xA9).  Don't progress unless this returns 0xA9!
+
+#### bool ready( void );
+
+This function checks to see if the SCMD is done booting and is ready to receive commands.  Use this after .begin(), and don't progress to your main program until this returns true.
+
+#### bool busy( void );
+
+This function checks to see if the SCMD busy with an operation.  Wait for busy to be clear before sending each configuration commands (not needed for motor drive levels).
+
+#### void enable( void );
+
+Call after .begin(); to allow PWM signals into the H-bridges.  If any outputs are connected as bridged, configure the driver to be bridged before calling .enable();.  This prevents the bridges from shorting out each other before configuration.
+
+#### void disable( void );
+
+Call to remove drive from the H-bridges.  All outputs will go low.
 
 #### void reset( void );
 
-This resets the I2C hardware for Teensy devices using the alternate library, and nothing otherwise.
+This resets the I2C hardware for Teensy 3 devices using the alternate library, and nothing otherwise.
 
 #### void setDrive( uint8_t channel, uint8_t direction, uint8_t level );
 
@@ -110,14 +144,12 @@ Writes data to a memory location of a slave.
 Products that use this Library 
 ---------------------------------
 
-* [Part SKU](SparkFun part URL)- Basic part and short description here
-* [Part SKU](SparkFun part URL)- Basic part and short description here
+* [ROB-13911](https://www.sparkfun.com/products/13911)- Basic part and short description here
 
 Version History
 ---------------
 
 * [vExxFxxZxxHxxLxxSxx](URL for tag specific to this version) - Description 
-* [vEyyFyyZyyHyyLyySyy](URL for tag specific to this version) - Description
 
 License Information
 -------------------

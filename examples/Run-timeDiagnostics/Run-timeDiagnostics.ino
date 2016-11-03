@@ -35,6 +35,7 @@ Distributed as-is; no warranty is given.
 //
 //  Try grounding the lines of the I2C bus to see what happens.  Watch the slaves' LEDs for activity blips
 //  and see if the bus recovers or not, as well as the types of failures recorded.
+
 #include <Arduino.h>
 #include <stdint.h>
 #include "SCMD.h"
@@ -82,7 +83,7 @@ void setup()
 	Serial.println( "ID matches 0xA9" );
 	Serial.println( "Re-enumerating slaves");
 	myMotorDriver.writeRegister( SCMD_CONTROL_1, SCMD_RE_ENUMERATE_BIT );
-	delay(100); //Give it time to take
+	
 	Serial.print("Waiting for ready");
 	while( myMotorDriver.ready() == false );
 	Serial.println(" Done.");
@@ -173,12 +174,14 @@ void printDiag( void )
 	Serial.println(myDiagnostics.E_I2C_RD_ERR);
 	Serial.print(" Expansion port I2C bus errors (writes): ");
 	Serial.println(myDiagnostics.E_I2C_WR_ERR);
-	Serial.print(" User port slave I2C ISR duration (peak, in us): ");
-	Serial.println(myDiagnostics.UPORT_TIME);
+	Serial.print(" Peak main loop operation time (in ms): ");
+	Serial.println( (float)myDiagnostics.LOOP_TIME / 10.0);
 	Serial.print(" Slave poll count register: ");
 	Serial.println(myDiagnostics.SLV_POLL_CNT);
 	Serial.print(" Expansion master I2C bus faults detected: ");
 	Serial.println(myDiagnostics.MST_E_ERR);
+	Serial.print(" Last master status register: 0x");
+	Serial.println(myDiagnostics.MST_E_STATUS, HEX);
 	Serial.print(" Number of failsafes that have occured: ");
 	Serial.println(myDiagnostics.FSAFE_FAULTS);
 	Serial.print(" Out of range register accesses: ");
@@ -198,13 +201,12 @@ void printRemoteDiag( void )
 		Serial.print("Slave at address: 0x");
 		Serial.println(i, HEX);
 		myMotorDriver.getRemoteDiagnostics((uint8_t)i, myDiagnostics);
-		Serial.print(" numberOfSlaves: ");
 		Serial.print(" Expansion port I2C bus errors (reads): ");
 		Serial.println(myDiagnostics.E_I2C_RD_ERR);
 		Serial.print(" Expansion port I2C bus errors (writes): ");
 		Serial.println(myDiagnostics.E_I2C_WR_ERR);
-		Serial.print(" Expansion master I2C bus faults detected: ");
-		Serial.println(myDiagnostics.MST_E_ERR);
+		Serial.print(" Peak main loop operation time (in ms): ");
+		Serial.println( (float)myDiagnostics.LOOP_TIME / 10.0);
 		Serial.print(" Number of failsafes that have occured: ");
 		Serial.println(myDiagnostics.FSAFE_FAULTS);
 		Serial.print(" Out of range register accesses: ");

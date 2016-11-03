@@ -66,9 +66,12 @@ void setup()
   while ( myMotorDriver.ready() == false );
   Serial.println("Done.");
 
+  //while( myMotorDriver.busy() );
   //myMotorDriver.inversionMode(0, 1); //invert channel A
+  while( myMotorDriver.busy() );
   myMotorDriver.inversionMode(1, 1); //invert channel B
-
+  
+  while( myMotorDriver.busy() );
   myMotorDriver.enable();
 
   pinMode(8, INPUT_PULLUP);

@@ -34,11 +34,11 @@ Distributed as-is; no warranty is given.
 
 //SCMD_STATUS_1 masks
 #define SCMD_ENUMERATION_BIT  0x01
-#define SCMD_BUSY_BIT        0x02
+#define SCMD_BUSY_BIT         0x02
 
 //SCMD_CONTROL_1 masks
 #define SCMD_FULL_RESET_BIT       0x01
-#define SCMD_RE_ENUMERATE_BIT       0x02
+#define SCMD_RE_ENUMERATE_BIT     0x02
     
 //Address map
 #define SCMD_FID                   0x00
@@ -50,7 +50,7 @@ Distributed as-is; no warranty is given.
 #define SCMD_U_BUF_DUMPED          0x06
 #define SCMD_E_I2C_RD_ERR          0x07
 #define SCMD_E_I2C_WR_ERR          0x08
-#define SCMD_UPORT_TIME	           0x09
+#define SCMD_LOOP_TIME	           0x09
 #define SCMD_SLV_POLL_CNT          0x0A
 #define SCMD_SLV_TOP_ADDR          0x0B
 #define SCMD_MST_E_ERR             0x0C

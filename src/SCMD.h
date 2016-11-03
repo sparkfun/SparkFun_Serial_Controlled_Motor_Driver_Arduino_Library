@@ -59,9 +59,10 @@ struct SCMDDiagnostics
 	uint8_t U_BUF_DUMPED = 0;
 	uint8_t E_I2C_RD_ERR = 0;
 	uint8_t E_I2C_WR_ERR = 0;
-	uint8_t UPORT_TIME = 0;
+	uint8_t LOOP_TIME = 0;
 	uint8_t SLV_POLL_CNT = 0;
 	uint8_t MST_E_ERR = 0;
+	uint8_t MST_E_STATUS = 0;
 	uint8_t FSAFE_FAULTS = 0;
 	uint8_t REG_OOR_CNT = 0;
 	uint8_t REG_RO_WRITE_CNT = 0;
@@ -85,10 +86,10 @@ class SCMD
 	
 	
     uint8_t begin( void );  //Call to apply SCMDSettings and returns ID word
-	bool ready( void );
-	bool busy( void );
-	void enable( void );
-	void disable( void );
+	bool ready( void ); //Returns 1 when enumeration is complete
+	bool busy( void ); //Returns 1 while the SCMD is busy with tasks that should not be interrupted
+	void enable( void ); //Sets all connected SCMDs to enable
+	void disable( void ); //Sets all connected SCMDs to disable
 	void reset( void );  //Software reset routine
     void setDrive( uint8_t motorNum, uint8_t direction, uint8_t level );//apply drive levels to motors
 	void inversionMode( uint8_t motorNum, uint8_t polarity );//Set inversion states for motors

@@ -134,7 +134,7 @@ bool SCMD::ready( void )
 
 }
 
-//check if enumeration is complete
+//check if SCMD is busy
 bool SCMD::busy( void )
 {
 	if( readRegister(SCMD_STATUS_1) & SCMD_BUSY_BIT )
@@ -319,7 +319,7 @@ void SCMD::getDiagnostics( SCMDDiagnostics &diagObjectReference )
 	diagObjectReference.U_BUF_DUMPED = readRegister( SCMD_U_BUF_DUMPED );
 	diagObjectReference.E_I2C_RD_ERR = readRegister( SCMD_E_I2C_RD_ERR );
 	diagObjectReference.E_I2C_WR_ERR = readRegister( SCMD_E_I2C_WR_ERR );
-	diagObjectReference.UPORT_TIME = readRegister( SCMD_UPORT_TIME );
+	diagObjectReference.LOOP_TIME = readRegister( SCMD_LOOP_TIME );
 	diagObjectReference.SLV_POLL_CNT = readRegister( SCMD_SLV_POLL_CNT );
 	//Count slaves
 	uint8_t topAddr = readRegister( SCMD_SLV_TOP_ADDR );
@@ -329,6 +329,7 @@ void SCMD::getDiagnostics( SCMDDiagnostics &diagObjectReference )
 		diagObjectReference.numberOfSlaves = topAddr - START_SLAVE_ADDR + 1;
 	}
 	diagObjectReference.MST_E_ERR = readRegister( SCMD_MST_E_ERR );
+	diagObjectReference.MST_E_STATUS = readRegister( SCMD_MST_E_STATUS );
 	diagObjectReference.FSAFE_FAULTS = readRegister( SCMD_FSAFE_FAULTS );
 	diagObjectReference.REG_OOR_CNT = readRegister( SCMD_REG_OOR_CNT );
 	diagObjectReference.REG_RO_WRITE_CNT = readRegister( SCMD_REG_RO_WRITE_CNT );
@@ -343,21 +344,16 @@ void SCMD::getDiagnostics( SCMDDiagnostics &diagObjectReference )
 //  SCMDDiagnostics &diagObjectReference -- Object to contain returned data
 void SCMD::getRemoteDiagnostics( uint8_t address, SCMDDiagnostics &diagObjectReference )
 {
-	diagObjectReference.U_I2C_RD_ERR = readRemoteRegister( address, SCMD_U_I2C_RD_ERR );
-	diagObjectReference.U_I2C_WR_ERR = readRemoteRegister( address, SCMD_U_I2C_WR_ERR );
-	diagObjectReference.U_BUF_DUMPED = readRemoteRegister( address, SCMD_U_BUF_DUMPED );
+	diagObjectReference.numberOfSlaves = 0;
+	diagObjectReference.U_I2C_RD_ERR = 0;
+	diagObjectReference.U_I2C_WR_ERR = 0;
+	diagObjectReference.U_BUF_DUMPED = 0;
 	diagObjectReference.E_I2C_RD_ERR = readRemoteRegister( address, SCMD_E_I2C_RD_ERR );
 	diagObjectReference.E_I2C_WR_ERR = readRemoteRegister( address, SCMD_E_I2C_WR_ERR );
-	diagObjectReference.UPORT_TIME = readRemoteRegister( address, SCMD_UPORT_TIME );
-	diagObjectReference.SLV_POLL_CNT = readRemoteRegister( address, SCMD_SLV_POLL_CNT );
-	//Count slaves
-	uint8_t topAddr = readRemoteRegister( address, SCMD_SLV_TOP_ADDR );
-	if( (topAddr >= START_SLAVE_ADDR) && (topAddr < (START_SLAVE_ADDR + 16)))
-	{
-		//in valid range
-		diagObjectReference.numberOfSlaves = topAddr - START_SLAVE_ADDR + 1;
-	}
-	diagObjectReference.MST_E_ERR = readRemoteRegister( address, SCMD_MST_E_ERR );
+	diagObjectReference.LOOP_TIME = readRemoteRegister( address, SCMD_LOOP_TIME );
+	diagObjectReference.SLV_POLL_CNT = 0;
+	diagObjectReference.MST_E_ERR = 0;
+	diagObjectReference.MST_E_STATUS = 0;
 	diagObjectReference.FSAFE_FAULTS = readRemoteRegister( address, SCMD_FSAFE_FAULTS );
 	diagObjectReference.REG_OOR_CNT = readRemoteRegister( address, SCMD_REG_OOR_CNT );
 	diagObjectReference.REG_RO_WRITE_CNT = readRemoteRegister( address, SCMD_REG_RO_WRITE_CNT );
@@ -376,7 +372,7 @@ void SCMD::resetDiagnosticCounts( void )
 	writeRegister( SCMD_E_I2C_RD_ERR, 0 );
 	writeRegister( SCMD_E_I2C_WR_ERR, 0 );
 	//Clear uport time
-	writeRegister( SCMD_UPORT_TIME, 0 );
+	writeRegister( SCMD_LOOP_TIME, 0 );
 	writeRegister( SCMD_MST_E_ERR, 0 );
 	writeRegister( SCMD_FSAFE_FAULTS, 0 );
 	writeRegister( SCMD_REG_OOR_CNT, 0 );
@@ -397,7 +393,7 @@ void SCMD::resetRemoteDiagnosticCounts( uint8_t address )
 	writeRemoteRegister( address, SCMD_E_I2C_RD_ERR, 0 );
 	writeRemoteRegister( address, SCMD_E_I2C_WR_ERR, 0 );
 	//Clear uport time
-	writeRemoteRegister( address, SCMD_UPORT_TIME, 0 );
+	writeRemoteRegister( address, SCMD_LOOP_TIME, 0 );
 	writeRemoteRegister( address, SCMD_ID, 0 );
 	writeRemoteRegister( address, SCMD_FSAFE_FAULTS, 0 );
 	writeRemoteRegister( address, SCMD_REG_OOR_CNT, 0 );

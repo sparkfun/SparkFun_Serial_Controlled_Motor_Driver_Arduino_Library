@@ -77,7 +77,7 @@ void setup()
 	//Fill packet with null, reset the pointer
 	for( int i = 0; i < PACKET_LENGTH; i++ )
 	{
-	packet[i] = 0;
+		packet[i] = 0;
 	}
 	//reset the pointer
 	packet_ptr = 0;
