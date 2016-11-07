@@ -120,7 +120,7 @@ uint8_t SCMD::begin( void )
 //check if enumeration is complete
 bool SCMD::ready( void )
 {
-	if( readRegister(SCMD_STATUS_1) & SCMD_ENUMERATION_BIT )
+	if(( readRegister(SCMD_STATUS_1) & SCMD_ENUMERATION_BIT )&&(( readRegister(SCMD_STATUS_1) != 0xFF )))//wait for ready flag and not 0xFF
 	{
 		return true;
 	}
@@ -500,7 +500,7 @@ void SCMD::writeRegister(uint8_t offset, uint8_t dataToWrite)
 		// take the chip select high to de-select:
 		digitalWrite(settings.chipSelectPin, HIGH);
 		
-		for(volatile int i = 0; i < 25; i++);
+		for(volatile int i = 0; i < 250; i++);
 		
 		break;
 
@@ -518,7 +518,7 @@ void SCMD::writeRegister(uint8_t offset, uint8_t dataToWrite)
 //  uint8_t offset -- Address of data to read.  Can be 0x00 to 0x7F
 uint8_t SCMD::readRemoteRegister(uint8_t address, uint8_t offset)
 {
-	while(busy());
+	//while(busy());
 	writeRegister(SCMD_REM_ADDR, address);
 	writeRegister(SCMD_REM_OFFSET, offset);
 	writeRegister(SCMD_REM_READ, 1);
@@ -541,5 +541,6 @@ void SCMD::writeRemoteRegister(uint8_t address, uint8_t offset, uint8_t dataToWr
 	writeRegister(SCMD_REM_OFFSET, offset);
 	writeRegister(SCMD_REM_DATA_WR, dataToWrite);
 	writeRegister(SCMD_REM_WRITE, 1);
+	while(busy());
 	
 }

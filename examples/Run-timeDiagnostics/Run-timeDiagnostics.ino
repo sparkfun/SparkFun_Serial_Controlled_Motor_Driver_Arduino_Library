@@ -55,6 +55,9 @@ void setup()
 {
 	Serial.begin(115200);
 	pinMode(LEDPIN, OUTPUT);
+	//Set spare CS lines to high for alternate CS pin
+	pinMode(9, OUTPUT);
+	digitalWrite(9, 1);
 	
 	Serial.println("Starting sketch.");
 
@@ -62,10 +65,10 @@ void setup()
 
 	//  .commInter face can be I2C_MODE or SPI_MODE
 	myMotorDriver.settings.commInterface = I2C_MODE;
-//	myMotorDriver.settings.commInterface = SPI_MODE;
+	//myMotorDriver.settings.commInterface = SPI_MODE;
 	
 	//  set address if I2C configuration selected with the config jumpers
-	myMotorDriver.settings.I2CAddress = 0x5A;
+	myMotorDriver.settings.I2CAddress = 0x61;
 	//  set chip select if SPI selected with the config jumpers
 	myMotorDriver.settings.chipSelectPin = 10;
 	delay(500);
@@ -74,15 +77,20 @@ void setup()
 	Serial.print("Read ID = 0x");
 	Serial.println(myMotorDriver.begin(), HEX);
 	
-	//  initialize the driver and enable the motor outputs
+	//  initialize the driver
 	while ( myMotorDriver.begin() != 0xA9 )
 	{
 		Serial.println( "ID mismatch, trying again" );
 		delay(50);
 	}
 	Serial.println( "ID matches 0xA9" );
+	
+	Serial.print("Waiting for ready");
+	while( myMotorDriver.ready() == false );
+	
+	Serial.println(" Done.");
 	Serial.println( "Re-enumerating slaves");
-	myMotorDriver.writeRegister( SCMD_CONTROL_1, SCMD_RE_ENUMERATE_BIT );
+	myMotorDriver.writeRegister( SCMD_CONTROL_1, SCMD_FULL_RESET_BIT );
 	
 	Serial.print("Waiting for ready");
 	while( myMotorDriver.ready() == false );
