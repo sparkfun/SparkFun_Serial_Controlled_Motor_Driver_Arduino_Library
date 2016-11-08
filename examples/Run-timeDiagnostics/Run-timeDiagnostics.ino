@@ -55,17 +55,19 @@ void setup()
 {
 	Serial.begin(115200);
 	pinMode(LEDPIN, OUTPUT);
-	//Set spare CS lines to high for alternate CS pin
+	//Set possible CS lines to high to start in good state
 	pinMode(9, OUTPUT);
 	digitalWrite(9, 1);
+	pinMode(10, OUTPUT);
+	digitalWrite(10, 1);
 	
 	Serial.println("Starting sketch.");
 
 	//***** Configure the Motor Driver's Settings *****//
 
 	//  .commInter face can be I2C_MODE or SPI_MODE
-	myMotorDriver.settings.commInterface = I2C_MODE;
-	//myMotorDriver.settings.commInterface = SPI_MODE;
+	//myMotorDriver.settings.commInterface = I2C_MODE;
+	myMotorDriver.settings.commInterface = SPI_MODE;
 	
 	//  set address if I2C configuration selected with the config jumpers
 	myMotorDriver.settings.I2CAddress = 0x61;

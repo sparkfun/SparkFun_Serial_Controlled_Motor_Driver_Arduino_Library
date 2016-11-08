@@ -29,6 +29,8 @@ Distributed as-is; no warranty is given.
 //#define USE_ALT_I2C
 
 //Use VERBOSE_SERIAL to add debug serial to an existing Serial object.
+//Note:  Use of VERBOSE_SERIAL adds delays surround RW ops, and should not be used
+//for functional testing.
 //#define VERBOSE_SERIAL
 
 //See _____ for additional topology notes.
@@ -96,6 +98,7 @@ uint8_t SCMD::begin( void )
 		// initalize the  data ready and chip select pins:
 		pinMode(settings.chipSelectPin, OUTPUT);
 		digitalWrite(settings.chipSelectPin, HIGH);
+		// Delay to give the target time to clear any faults induced by the low
 		// start the SPI library:
 		SPI.begin();
 		// Maximum SPI frequency is 1MHz use SPI_CLK_DIV16
@@ -120,7 +123,8 @@ uint8_t SCMD::begin( void )
 //check if enumeration is complete
 bool SCMD::ready( void )
 {
-	if(( readRegister(SCMD_STATUS_1) & SCMD_ENUMERATION_BIT )&&(( readRegister(SCMD_STATUS_1) != 0xFF )))//wait for ready flag and not 0xFF
+	uint8_t statusByte = readRegister(SCMD_STATUS_1);
+	if(( statusByte & SCMD_ENUMERATION_BIT )&&(( statusByte != 0xFF )))//wait for ready flag and not 0xFF
 	{
 		return true;
 	}
@@ -137,7 +141,8 @@ bool SCMD::ready( void )
 //check if SCMD is busy
 bool SCMD::busy( void )
 {
-	if( readRegister(SCMD_STATUS_1) & SCMD_BUSY_BIT )
+	uint8_t statusByte = readRegister(SCMD_STATUS_1);
+	if( statusByte & (SCMD_BUSY_BIT | SCMD_REM_READ_BIT | SCMD_REM_WRITE_BIT))
 	{
 #ifdef VERBOSE_SERIAL		
 		Serial.print(".");
@@ -446,7 +451,7 @@ uint8_t SCMD::readRegister(uint8_t offset)
 		digitalWrite(settings.chipSelectPin, HIGH);
 		
 		//For loop delay for 16 Mhz CPU
-		for(volatile int i = 0; i < 25; i++);
+		for(volatile int i = 0; i < 50; i++);
 		
 		//do a dummy read
 		digitalWrite(settings.chipSelectPin, LOW);
@@ -456,14 +461,21 @@ uint8_t SCMD::readRegister(uint8_t offset)
 		digitalWrite(settings.chipSelectPin, HIGH);
 		
 		//For loop delay for 16 Mhz CPU
-		for(volatile int i = 0; i < 25; i++);
+		for(volatile int i = 0; i < 50; i++);
 		
 		break;
 
 	default:
 		break;
 	}
-	return result;
+#ifdef VERBOSE_SERIAL		
+	Serial.print("~R");
+	Serial.print(offset, HEX);
+	Serial.print(":");
+	Serial.print(result, HEX);
+	Serial.println("");
+#endif
+return result;
 }
 
 //writeRegister( ... )
@@ -500,13 +512,20 @@ void SCMD::writeRegister(uint8_t offset, uint8_t dataToWrite)
 		// take the chip select high to de-select:
 		digitalWrite(settings.chipSelectPin, HIGH);
 		
-		for(volatile int i = 0; i < 250; i++);
+		for(volatile int i = 0; i < 50; i++);
 		
 		break;
 
 	default:
 		break;
 	}
+#ifdef VERBOSE_SERIAL		
+	Serial.print("~W");
+	Serial.print(offset, HEX);
+	Serial.print(":");
+	Serial.print(dataToWrite, HEX);
+	Serial.println("");
+#endif
 }
 
 //readRegister( ... )
@@ -523,7 +542,17 @@ uint8_t SCMD::readRemoteRegister(uint8_t address, uint8_t offset)
 	writeRegister(SCMD_REM_OFFSET, offset);
 	writeRegister(SCMD_REM_READ, 1);
 	while(busy());
-	return readRegister(SCMD_REM_DATA_RD);
+	uint8_t result = readRegister(SCMD_REM_DATA_RD);
+#ifdef VERBOSE_SERIAL		
+	Serial.print("~R");
+	Serial.print(address, HEX);
+	Serial.print(",");
+	Serial.print(offset, HEX);
+	Serial.print(":");
+	Serial.print(result, HEX);
+	Serial.println("");
+#endif
+	return result;
 	
 }
 
@@ -542,5 +571,12 @@ void SCMD::writeRemoteRegister(uint8_t address, uint8_t offset, uint8_t dataToWr
 	writeRegister(SCMD_REM_DATA_WR, dataToWrite);
 	writeRegister(SCMD_REM_WRITE, 1);
 	while(busy());
-	
+#ifdef VERBOSE_SERIAL		
+	Serial.print("~W");
+	Serial.print(address, HEX);
+	Serial.print(",");
+	Serial.print(offset, HEX);
+	Serial.print(":");	Serial.print(dataToWrite, HEX);
+	Serial.println("");
+#endif
 }

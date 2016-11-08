@@ -50,7 +50,7 @@ void setup()
 	//myMotorDriver.settings.commInterface = SPI_MODE;
 
 	//  set address if I2C configuration selected with the config jumpers
-	myMotorDriver.settings.I2CAddress = 0x5A; //config pattern "0101" on board for address 0x5A
+	myMotorDriver.settings.I2CAddress = 0x61;//0x5A; //config pattern "0101" on board for address 0x5A
 	//  set chip select if SPI selected with the config jumpers
 	myMotorDriver.settings.chipSelectPin = 10;
 	
