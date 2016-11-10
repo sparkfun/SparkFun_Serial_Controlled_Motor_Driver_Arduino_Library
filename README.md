@@ -1,4 +1,4 @@
-SparkFun <PRODUCT NAME> Arduino Library
+SparkFun Serial Controlled Motor Driver Arduino Library
 ========================================
 
 ![Serial Controlled Motor Driver](https://cdn.sparkfun.com/assets/learn_tutorials/5/7/4/SCMD_Main_Photo.jpg)
