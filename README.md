@@ -21,30 +21,23 @@ Documentation
 * **[Product Repository](https://github.com/sparkfun/Serial_Controlled_Motor_Driver)** - Main repository (including hardware files) for the SCMD.
 * **[Hookup Guide](https://learn.sparkfun.com/tutorials/serial-controlled-motor-driver-hookup-guide)** - Basic hookup guide for the SCMD.
 
-### Classes and Structures
+### Usage
 
-There are a few classes used in the library.  The main class is called `SCMD`, which is the object that talks to the motor drivers.  There are also a couple structs in use -- `SCMDSettings` and `SCMDDiagnostics`.  A `SCMDSettings` object named settings is present within the SCMD class for configuration.
-
-#### SCMDDiagnostics
-
-Contains a bunch of 8 bit values of data for use with **getDiagnostics** and **getRemoteDiagnostics**.
-
-#### SCMDSettings
-
-Contains the settings used by **SCMD**.
-
-#### SCMD
-
-The main class which controls 1 master and connected slaves.
-
-### Construction
-The library is made such that new motor driver objects are constructed without parameters, and are configured later before calling `.begin()`.
+The library is made such that new motor driver object is constructed without parameters, the user populates the public settings structure, then calls .begin() to start the wire library and apply the communication settings.
 
 Example:
 
-    SCMD myMotorDriver; //This creates an instance of SCMD which will be bound to a single master.
+	SCMD myMotorDriver; //This creates an instance of SCMD which will be bound to a single master.
+	
+	void setup()
+	{
+		myMotorDriver.settings.commInterface = I2C_MODE; //or SPI_MODE
+		myMotorDriver.settings.I2CAddress = 0x5A;
+		myMotorDriver.settings.chipSelectPin = 10;
+		myMotorDriver.begin();
+	}
 
-### Settings
+#### Settings
 The main SCMD class has a public member which is named settings.  To configure settings, use the format `myMotorDriver.settings.I2CAddress = (...);` then call .begin() to apply.
 
 settings contains the following members:
@@ -52,6 +45,61 @@ settings contains the following members:
 * uint8_t commInterface -- Set equal to I2C_MODE or SPI_MODE
 * uint8_t I2CAddress -- Set to address that master is configured to in case of I2C usage
 * uint8_t chipSelectPin -- Set to chip select pin used on Arduino in case of SPI
+
+### Classes and Structures
+
+There are a few classes used in the library.  The main class is called `SCMD`, which is the object that talks to the motor drivers.  There are also a couple structs in use -- `SCMDSettings` and `SCMDDiagnostics`.  A `SCMDSettings` object named settings is present within the SCMD class for configuration.
+
+#### SCMD
+SCMD is used to declare a single chain of motor drivers at specified port and modes in settings. The contained functions are described in a later section.
+
+	class SCMD
+	{
+	public:
+		//settings
+		SCMDSettings settings;
+		SCMD( void );
+		
+		uint8_t begin( void );
+		... (Other functions...)
+		
+		uint16_t i2cFaults; //Location to hold i2c faults for alternate
+		driver
+	};
+
+#### SCMDSettings
+SCMDSettings is an type for the settings member of SCMD. It is declared public to be configured by the user.
+
+	struct SCMDSettings
+	{
+	public:
+		//Main Interface and mode settings
+		uint8_t commInterface;
+		uint8_t I2CAddress;
+		uint8_t chipSelectPin;
+	};
+
+#### SCMDDiagnostics
+SCMDDiagnostics contains a bunch of 8 bit values of data for use with getDiagnostics and getRemoteDiagnostics. Declared objects are passed as a reference to the diagnostic function and written by the collected data.
+
+	struct SCMDDiagnostics
+	{
+	public:
+		//Attainable metrics from SCMD
+		uint8_t numberOfSlaves = 0;
+		uint8_t U_I2C_RD_ERR = 0;
+		uint8_t U_I2C_WR_ERR = 0;
+		uint8_t U_BUF_DUMPED = 0;
+		uint8_t E_I2C_RD_ERR = 0;
+		uint8_t E_I2C_WR_ERR = 0;
+		uint8_t LOOP_TIME = 0;
+		uint8_t SLV_POLL_CNT = 0;
+		uint8_t MST_E_ERR = 0;
+		uint8_t MST_E_STATUS = 0;
+		uint8_t FSAFE_FAULTS = 0;
+		uint8_t REG_OOR_CNT = 0;
+		uint8_t REG_RO_WRITE_CNT = 0;
+	};
 
 ### Functions
 
