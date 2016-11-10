@@ -4,14 +4,15 @@ Serial Controlled Motor Driver
 Marshall Taylor @ SparkFun Electronics
 May 20, 2015
 https://github.com/sparkfun/Serial_Controlled_Motor_Driver
+https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library
 
 Resources:
 Uses Wire.h for i2c operation
 Uses SPI.h for SPI operation
 
 Development environment specifics:
-Arduino IDE _______
-Teensy loader ________
+Arduino IDE 1.6.7
+Teensy loader 1.27
 
 This code is released under the [MIT License](http://opensource.org/licenses/MIT).
 Please review the LICENSE.md file included with this example. If you have any questions 

@@ -1,17 +1,18 @@
 /******************************************************************************
-  TwoMotorRobot.ino
+  DriverChainWithBridging.ino
   Serial Controlled Motor Driver
   Marshall Taylor @ SparkFun Electronics
-  May 20, 2015
+  Sept 15, 2016
   https://github.com/sparkfun/Serial_Controlled_Motor_Driver
+  https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library
 
   Resources:
   Uses Wire.h for i2c operation
   Uses SPI.h for SPI operation
 
   Development environment specifics:
-  Arduino IDE _______
-  Teensy loader ________
+  Arduino IDE 1.6.7
+  Teensy loader 1.27
 
   This code is released under the [MIT License](http://opensource.org/licenses/MIT).
   Please review the LICENSE.md file included with this example. If you have any questions
@@ -24,7 +25,7 @@
 //channel is activated.)
 //
 //This also shows how to count the number of connected slaves and report, as well as
-//arbitrary register operation.
+//arbitrary register access.
 
 #include <Arduino.h>
 #include <stdint.h>
@@ -47,8 +48,8 @@ void setup()
   //***** Configure the Motor Driver's Settings *****//
 
   //  .commInter face can be I2C_MODE or SPI_MODE
-  //myMotorDriver.settings.commInterface = I2C_MODE;
-  myMotorDriver.settings.commInterface = SPI_MODE;
+  myMotorDriver.settings.commInterface = I2C_MODE;
+  //myMotorDriver.settings.commInterface = SPI_MODE;
 
   //  set address if I2C configuration selected with the config jumpers
   myMotorDriver.settings.I2CAddress = 0x5A; //config pattern "0101" on board for address 0x5A

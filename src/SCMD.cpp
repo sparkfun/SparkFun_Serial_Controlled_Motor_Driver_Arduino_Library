@@ -4,6 +4,7 @@ SCMD Arduino and Teensy Driver
 Marshall Taylor @ SparkFun Electronics
 May 20, 2015
 https://github.com/sparkfun/Serial_Controlled_Motor_Driver
+https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library
 
 Resources:
 Uses Wire.h for i2c operation

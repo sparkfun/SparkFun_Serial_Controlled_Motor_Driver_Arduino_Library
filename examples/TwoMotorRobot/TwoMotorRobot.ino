@@ -2,8 +2,9 @@
   TwoMotorRobot.ino
   Serial Controlled Motor Driver
   Marshall Taylor @ SparkFun Electronics
-  May 20, 2015
+  Sept 15, 2016
   https://github.com/sparkfun/Serial_Controlled_Motor_Driver
+  https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library
 
   Resources:
   Uses Wire.h for i2c operation
@@ -11,7 +12,7 @@
 
   Development environment specifics:
   Arduino IDE 1.6.7
-  Teensy loader ________
+  Teensy loader 1.27
 
   This code is released under the [MIT License](http://opensource.org/licenses/MIT).
   Please review the LICENSE.md file included with this example. If you have any questions
@@ -58,23 +59,23 @@ void setup()
   }
   Serial.println( "ID matches 0xA9" );
 
-  //  Check to make sure the driver is done looking for slaves before beginning 
+  //  Check to make sure the driver is done looking for slaves before beginning
   Serial.print("Waiting for enumeration...");
   while ( myMotorDriver.ready() == false );
   Serial.println("Done.");
   Serial.println();
 
-  //*****Set application settings and enable driver*****//  
+  //*****Set application settings and enable driver*****//
 
   //Uncomment code for motor 0 inversion
   //while( myMotorDriver.busy() );
   //myMotorDriver.inversionMode(0, 1); //invert motor 0
 
   //Uncomment code for motor 1 inversion
-  while( myMotorDriver.busy() ); //Waits until the SCMD is available.
+  while ( myMotorDriver.busy() ); //Waits until the SCMD is available.
   myMotorDriver.inversionMode(1, 1); //invert motor 1
 
-  while( myMotorDriver.busy() );
+  while ( myMotorDriver.busy() );
   myMotorDriver.enable(); //Enables the output driver hardware
 
 }

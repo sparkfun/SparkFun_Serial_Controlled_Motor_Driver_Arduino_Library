@@ -21,18 +21,30 @@ Documentation
 * **[Product Repository](https://github.com/sparkfun/Serial_Controlled_Motor_Driver)** - Main repository (including hardware files) for the SCMD.
 * **[Hookup Guide](https://learn.sparkfun.com/tutorials/serial-controlled-motor-driver-hookup-guide)** - Basic hookup guide for the SCMD.
 
-#### General Operation
+### Classes and Structures
 
 There are a few classes used in the library.  The main class is called `SCMD`, which is the object that talks to the motor drivers.  There are also a couple structs in use -- `SCMDSettings` and `SCMDDiagnostics`.  A `SCMDSettings` object named settings is present within the SCMD class for configuration.
 
-#### Construction
+#### SCMDDiagnostics
+
+Contains a bunch of 8 bit values of data for use with **getDiagnostics** and **getRemoteDiagnostics**.
+
+#### SCMDSettings
+
+Contains the settings used by **SCMD**.
+
+#### SCMD
+
+The main class which controls 1 master and connected slaves.
+
+### Construction
 The library is made such that new motor driver objects are constructed without parameters, and are configured later before calling `.begin()`.
 
 Example:
 
     SCMD myMotorDriver; //This creates an instance of SCMD which will be bound to a single master.
 
-#### Settings
+### Settings
 The main SCMD class has a public member which is named settings.  To configure settings, use the format `myMotorDriver.settings.I2CAddress = (...);` then call .begin() to apply.
 
 settings contains the following members:
@@ -41,7 +53,7 @@ settings contains the following members:
 * uint8_t I2CAddress -- Set to address that master is configured to in case of I2C usage
 * uint8_t chipSelectPin -- Set to chip select pin used on Arduino in case of SPI
 
-#### Functions
+### Functions
 
 #### uint8_t begin( void );
 
@@ -149,7 +161,7 @@ Products that use this Library
 Version History
 ---------------
 
-* [vExxFxxZxxHxxLxxSxx](URL for tag specific to this version) - Description 
+* [V_1.0.0](https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library/tree/V_1.0.0) - Public Release
 
 License Information
 -------------------

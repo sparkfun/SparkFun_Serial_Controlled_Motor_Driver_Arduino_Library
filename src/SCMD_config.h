@@ -4,6 +4,7 @@ Serial Controlled Motor Driver
 Marshall Taylor @ SparkFun Electronics
 Nov 3, 2016
 https://github.com/sparkfun/Serial_Controlled_Motor_Driver
+https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library
 
 This file contains common names for memory locations and hardware defaults.
 This is used by the PSoC firmware and with the user Arduino library for use in
