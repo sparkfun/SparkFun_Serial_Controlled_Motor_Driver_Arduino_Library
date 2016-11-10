@@ -156,7 +156,7 @@ Writes data to a memory location of a slave.
 Products that use this Library 
 ---------------------------------
 
-* [ROB-13911](https://www.sparkfun.com/products/13911)- Basic part and short description here
+* [ROB-13911](https://www.sparkfun.com/products/13911)- A serial controlled bridgable driver for small DC motors.
 
 Version History
 ---------------
