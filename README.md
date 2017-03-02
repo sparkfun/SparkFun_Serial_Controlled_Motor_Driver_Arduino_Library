@@ -210,6 +210,7 @@ Version History
 ---------------
 
 * [V_1.0.0](https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library/tree/V_1.0.0) - Public Release
+* [V_1.0.1](https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library/tree/V_1.0.1) - Public Release
 
 License Information
 -------------------
