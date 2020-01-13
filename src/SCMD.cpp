@@ -35,7 +35,7 @@ Distributed as-is; no warranty is given.
 //#define VERBOSE_SERIAL
 
 //See _____ for additional topology notes.
-
+#include <Arduino.h>
 #include <stdint.h>
 #include <math.h>
 #include "SCMD.h"
@@ -92,7 +92,7 @@ uint8_t SCMD::begin( void )
 	{
 
 	case I2C_MODE:
-		Wire.begin(settings.I2CAddress);
+		Wire.begin();
 		break;
 
 	case SPI_MODE:
