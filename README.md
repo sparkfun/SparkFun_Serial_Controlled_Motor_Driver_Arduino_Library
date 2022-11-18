@@ -1,5 +1,6 @@
 SparkFun Serial Controlled Motor Driver Arduino Library
 ========================================
+[![Compile Examples](https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library/workflows/Compile%20Examples/badge.svg)](https://github.com/sparkfun/SparkFun_Serial_Controlled_Motor_Driver_Arduino_Library/actions?workflow=Compile+Examples)
 
 ![Serial Controlled Motor Driver](https://cdn.sparkfun.com/assets/learn_tutorials/5/7/4/SCMD_Main_Photo.jpg)
 
